@@ -1,0 +1,40 @@
+volumes:
+ mysql_data:
+  
+services:
+ mysql:
+  image: mysql:8.0
+  container_name: mysql8
+  restart: always
+  environment:
+   MYSQL_ROOT_PASSWORD: f@stNoise77
+   MYSQL_DATABASE: instruct-eric-task-db
+  volumes:
+   - mysql_data:/var/lib/mysql/
+  ports:
+   - 6033:3306
+
+ php:  
+  container_name: php80
+  build:
+   context: .
+   dockerfile: Dockerfile
+  volumes:
+   - ./src:/var/www/html/
+  ports:
+   - 8080:80
+   - 8083:443
+  depends_on:
+   - mysql
+   
+ phpmyadmin:
+  image: phpmyadmin:5.1.1-apache
+  container_name: phpmyadmin511
+  restart: always
+  environment:
+   PMA_HOST: mysql
+  ports:
+   - 8081:80
+  depends_on:
+   - mysql
+  
